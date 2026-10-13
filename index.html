@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Show das Escrituras - Um emocionante jogo de perguntas e respostas sobre as Obras-Padrão da Igreja de Jesus Cristo dos Santos dos Últimos Dias com a emoção do Show do Milhão.">
+  <meta name="keywords" content="Show do Milhao, Obras Padrao, Livro de Mormon, Doutrina e Convenios, Biblia, Perola de Grande Valor, Sud, Santos dos Ultimos Dias, Jogo Biblico">
+  <title>Show das Escrituras | O Desafio do Milhão de Talentos</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+</head>
+<body>
+  <!-- Efeitos de Fundo -->
+  <div class="app-background"></div>
+  <canvas id="particles-canvas"></canvas>
+
+  <div class="app-container">
+    <!-- Cabeçalho do Jogo -->
+    <header class="game-header">
+      <div class="brand-section">
+        <div class="brand-icon">📜</div>
+        <div>
+          <div class="brand-title">SHOW DAS ESCRITURAS</div>
+          <div class="brand-subtitle">O Desafio do Milhão de Talentos</div>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <button id="btn-sound-toggle" class="icon-btn" title="Ativar/Desativar Som" aria-label="Alternar Som">🔊</button>
+      </div>
+    </header>
+
+    <!-- ======================================================= -->
+    <!-- TELA 1: MENU DE ABERTURA & CONFIGURAÇÕES               -->
+    <!-- ======================================================= -->
+    <main id="start-screen" class="screen active">
+      <section class="hero-section">
+        <div class="hero-badge">✦ Obras-Padrão Restauradas ✦</div>
+        <h1 class="hero-title">Você Conhece as Sagradas Escrituras?</h1>
+        <p class="hero-description">
+          Teste seus conhecimentos com 16 perguntas desafiadoras rumo ao prêmio máximo de 
+          <strong>1.000.000 de Talentos</strong>. Use com sabedoria as ajudas dos Alunos do Seminário, das Cartas e do GEE!
+        </p>
+      </section>
+
+      <!-- Painéis de Configuração -->
+      <section class="setup-grid">
+        <!-- Escolha das Obras -->
+        <div class="setup-card">
+          <div class="setup-card-title">
+            <span>📚</span>
+            <h2>Escolha a Obra-Padrão</h2>
+          </div>
+          <div class="category-picker">
+            <div class="category-option selected span-2" data-category="all" id="cat-all">
+              <span class="category-option-name">🌟 Todas as Obras-Padrão</span>
+              <span class="category-option-desc">Mix de todas as escrituras sagradas</span>
+            </div>
+            <div class="category-option" data-category="bom" id="cat-bom">
+              <span class="category-option-name">📖 Livro de Mórmon</span>
+              <span class="category-option-desc">Outro Testamento de Jesus Cristo</span>
+            </div>
+            <div class="category-option" data-category="nt" id="cat-nt">
+              <span class="category-option-name">✝️ Novo Testamento</span>
+              <span class="category-option-desc">Vida e ministério de Cristo e Apóstolos</span>
+            </div>
+            <div class="category-option" data-category="ot" id="cat-ot">
+              <span class="category-option-name">📜 Velho Testamento</span>
+              <span class="category-option-desc">De Adão e Abraão aos profetas de Israel</span>
+            </div>
+            <div class="category-option" data-category="dc" id="cat-dc">
+              <span class="category-option-name">🕊️ Doutrina e Convênios</span>
+              <span class="category-option-desc">Revelações modernas da Restauração</span>
+            </div>
+            <div class="category-option span-2" data-category="pgv" id="cat-pgv">
+              <span class="category-option-name">💎 Pérola de Grande Valor</span>
+              <span class="category-option-desc">Moisés, Abraão, Joseph Smith - História e Regras de Fé</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modo de Jogo -->
+        <div class="setup-card">
+          <div class="setup-card-title">
+            <span>👥</span>
+            <h2>Modo de Participação</h2>
+          </div>
+          <div class="mode-toggle-group">
+            <div class="mode-btn selected" data-mode="single" id="mode-single">
+              <div class="mode-icon">👤</div>
+              <div>
+                <div class="mode-info-title">Jornada Individual</div>
+                <div class="mode-info-sub">Jogue sozinho para bater seu recorde pessoal</div>
+              </div>
+            </div>
+
+            <div class="mode-btn" data-mode="teams" id="mode-teams">
+              <div class="mode-icon">👨‍👩‍👧‍👦</div>
+              <div>
+                <div class="mode-info-title">Noite Familiar / Equipes</div>
+                <div class="mode-info-sub">Dispute em 2 equipes alternando perguntas</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Campos de Nomes das Equipes -->
+          <div id="team-inputs" class="team-inputs-container">
+            <div class="team-input-box">
+              <label for="team1-name-input">Equipe 1</label>
+              <input type="text" id="team1-name-input" value="Equipe Néfi" maxlength="20" placeholder="Nome da Equipe 1">
+            </div>
+            <div class="team-input-box">
+              <label for="team2-name-input">Equipe 2</label>
+              <input type="text" id="team2-name-input" value="Equipe Alma" maxlength="20" placeholder="Nome da Equipe 2">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Botão Iniciar -->
+      <div class="start-game-wrapper">
+        <button id="btn-start-game" class="btn-primary" aria-label="Iniciar o Show das Escrituras">
+          <span>COMEÇAR O SHOW</span>
+          <span>⚡</span>
+        </button>
+        <div class="menu-sound-hint">
+          <button id="btn-menu-music-toggle" class="menu-music-btn" title="Tocar ou pausar música de abertura">
+            <span class="music-note-icon">🎵</span>
+            <span id="menu-music-label">Música Tema: Ativa</span>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- ======================================================= -->
+    <!-- TELA 2: ARENA DO SHOW (GAME SHOW ARENA)                -->
+    <!-- ======================================================= -->
+    <main id="game-screen" class="screen">
+      <div class="game-layout">
+        <!-- Palco Central -->
+        <section class="main-stage">
+          <!-- Barra de Informações da Pergunta -->
+          <div class="question-top-bar">
+            <div id="current-category-badge" class="current-category-tag">🌟 Livro de Mórmon</div>
+            <div id="current-level-badge" class="question-level-badge">PERGUNTA 1 DE 16</div>
+            <div id="team-turn-badge" class="turn-indicator">🎯 Vez de: Equipe 1</div>
+          </div>
+
+          <!-- Barra de Ajudas Clássicas -->
+          <div class="lifelines-bar">
+            <button id="btn-lifeline-seminary" class="lifeline-btn" title="Pedir a opinião da classe de Seminário">
+              <span class="lifeline-icon">🎓</span>
+              <span class="lifeline-label">Alunos do Seminário</span>
+              <span class="lifeline-count">Disponível</span>
+            </button>
+
+            <button id="btn-lifeline-cards" class="lifeline-btn" title="Virar as cartas para eliminar alternativas erradas">
+              <span class="lifeline-icon">🃏</span>
+              <span class="lifeline-label">As Cartas</span>
+              <span class="lifeline-count">Disponível</span>
+            </button>
+
+            <button id="btn-lifeline-gee" class="lifeline-btn" title="Consultar o Guia para Estudo das Escrituras">
+              <span class="lifeline-icon">🔍</span>
+              <span class="lifeline-label">GEE (Dica)</span>
+              <span class="lifeline-count">Disponível</span>
+            </button>
+
+            <button id="btn-lifeline-pass" class="lifeline-btn" title="Pular esta pergunta">
+              <span class="lifeline-icon">⏭️</span>
+              <span class="lifeline-label">Pular Pergunta</span>
+              <span id="pass-count-label" class="lifeline-count">(3 restantes)</span>
+            </button>
+          </div>
+
+          <!-- Caixa da Pergunta -->
+          <div class="question-container">
+            <div id="question-text" class="question-text">Carregando pergunta sagrada...</div>
+          </div>
+
+          <!-- Grid de Alternativas [A], [B], [C], [D] -->
+          <div class="answers-grid">
+            <button class="answer-card" data-index="0" id="answer-opt-0">
+              <span class="answer-letter">A</span>
+              <span class="answer-text">Alternativa A</span>
+            </button>
+            <button class="answer-card" data-index="1" id="answer-opt-1">
+              <span class="answer-letter">B</span>
+              <span class="answer-text">Alternativa B</span>
+            </button>
+            <button class="answer-card" data-index="2" id="answer-opt-2">
+              <span class="answer-letter">C</span>
+              <span class="answer-text">Alternativa C</span>
+            </button>
+            <button class="answer-card" data-index="3" id="answer-opt-3">
+              <span class="answer-letter">D</span>
+              <span class="answer-text">Alternativa D</span>
+            </button>
+          </div>
+
+          <!-- Controles de Ação (Confirmar / Parar) -->
+          <div class="action-controls-bar">
+            <button id="btn-stop-game" class="btn-stop" title="Encerrar o jogo e levar o prêmio garantido">
+              <span>🛑</span>
+              <span>PARAR O JOGO</span>
+            </button>
+
+            <button id="btn-confirm-answer" class="btn-confirm" disabled title="Confirmar sua resposta selecionada">
+              <span>CONFIRMAR RESPOSTA</span>
+              <span>🔒</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Painel Lateral: Escada de Talentos & Valores -->
+        <aside class="side-panel">
+          <!-- Riscos da Rodada (Acertar, Parar, Errar) -->
+          <div class="values-card">
+            <div class="values-grid">
+              <div class="value-col">
+                <span class="value-col-label win">Se Acertar</span>
+                <span id="val-win" class="value-col-number">1.000</span>
+              </div>
+              <div class="value-col">
+                <span class="value-col-label stop">Se Parar</span>
+                <span id="val-stop" class="value-col-number">0</span>
+              </div>
+              <div class="value-col">
+                <span class="value-col-label lose">Se Errar</span>
+                <span id="val-lose" class="value-col-number">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Escada Vertical de Perguntas -->
+          <div class="ladder-card">
+            <div class="ladder-card-title">Escada de Talentos</div>
+            <div id="ladder-list" class="ladder-list">
+              <!-- Gerado dinamicamente via JS -->
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <!-- ======================================================= -->
+    <!-- TELA 3: FIM DE JOGO / VITÓRIA DO MILHÃO                -->
+    <!-- ======================================================= -->
+    <main id="game-over-screen" class="screen">
+      <div class="game-over-hero">
+        <div class="game-over-badge">🏆</div>
+        <h2 id="game-over-title" class="game-over-title">PARABÉNS PELA JORNADA!</h2>
+        <p class="hero-description">Você acumulou um valioso tesouro de conhecimento nas escrituras sagradas:</p>
+        
+        <div id="game-over-prize" class="prize-won-number">1.000.000 Talentos</div>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div id="stat-questions-answered" class="stat-box-val">16 / 16</div>
+            <div class="stat-box-lbl">Perguntas Respondidas</div>
+          </div>
+          <div class="stat-box">
+            <div id="stat-mode-result" class="stat-box-val">Individual</div>
+            <div class="stat-box-lbl">Modo de Jogo</div>
+          </div>
+          <div class="stat-box">
+            <div id="stat-category-played" class="stat-box-val">Todas as Obras</div>
+            <div class="stat-box-lbl">Categoria</div>
+          </div>
+        </div>
+
+        <button id="btn-play-again" class="btn-primary">
+          <span>JOGAR NOVAMENTE</span>
+          <span>🔄</span>
+        </button>
+      </div>
+    </main>
+
+    <!-- ======================================================= -->
+    <!-- MODAIS INTERATIVOS (Ajudas & Escritura Revelada)       -->
+    <!-- ======================================================= -->
+    <div id="modal-overlay" class="modal-overlay">
+      <!-- 1. Modal dos Alunos do Seminário -->
+      <div id="seminary-modal" class="modal-box" style="display: none;">
+        <div class="modal-icon">🎓</div>
+        <h3 class="modal-title">Alunos do Seminário</h3>
+        <p class="modal-desc">Os alunos votaram na alternativa que acreditam ser a correta:</p>
+        <div id="seminary-bars-container" class="seminary-bars">
+          <!-- Barras geradas dinamicamente -->
+        </div>
+        <button class="btn-primary" onclick="window.gameInstance.closeModals()">Entendido, Obrigado!</button>
+      </div>
+
+      <!-- 2. Modal das Cartas -->
+      <div id="cards-modal" class="modal-box" style="display: none;">
+        <div class="modal-icon">🃏</div>
+        <h3 class="modal-title">As Cartas</h3>
+        <p class="modal-desc">Escolha uma carta para revelar quantas alternativas erradas serão eliminadas (Rei = 0, Ás = 1, 2 = 2, 3 = 3):</p>
+        <div id="cards-deck-container" class="cards-deck">
+          <!-- Cartas 3D geradas dinamicamente -->
+        </div>
+      </div>
+
+      <!-- 3. Modal do GEE (Guia para Estudo das Escrituras) -->
+      <div id="gee-modal" class="modal-box" style="display: none;">
+        <div class="modal-icon">🔍</div>
+        <h3 class="modal-title">Guia para Estudo das Escrituras</h3>
+        <p class="modal-desc">O guia oferece a seguinte reflexão para iluminar sua resposta:</p>
+        <div id="gee-hint-text" class="gee-quote-box">"Dica sagrada..."</div>
+        <button class="btn-primary" onclick="window.gameInstance.closeModals()">Continuar</button>
+      </div>
+
+      <!-- 4. Modal da Escritura Revelada (Pós Resposta) -->
+      <div id="scripture-modal" class="modal-box" style="display: none;">
+        <div class="modal-icon">📖</div>
+        <h3 id="scripture-modal-title" class="modal-title">RESPOSTA CORRETA!</h3>
+        <div class="scripture-reveal-box">
+          <div id="scripture-modal-ref" class="scripture-ref-title">1 Néfi 3:7</div>
+          <div id="scripture-modal-desc" class="scripture-explanation-text">Explicação doutrinária da escritura...</div>
+        </div>
+        <button id="btn-scripture-continue" class="btn-primary">Prosseguir na Jornada</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts e Banco de 500 Perguntas das Obras-Padrão -->
+  <script src="data_bom.js"></script>
+  <script src="data_nt.js"></script>
+  <script src="data_ot.js"></script>
+  <script src="data_dc.js"></script>
+  <script src="data_pgv.js"></script>
+  <script src="questions.js"></script>
+  <script src="sound.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
